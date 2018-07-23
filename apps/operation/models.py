@@ -51,7 +51,7 @@ class UserMsgs(models.Model):
 
 
 class UserFavs(models.Model):
-    user = models.IntegerField(default=0, verbose_name='用户')
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name='用户')
     fav_type = models.IntegerField(choices=((1, '课程'), (2, '机构'), (3, '讲师')), verbose_name='收藏类型')
     fav_id = models.IntegerField(verbose_name='收藏id号')
     add_time = models.DateTimeField(default=datetime.now, verbose_name='添加时间')

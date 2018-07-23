@@ -13,9 +13,9 @@ class CitiesAdmin(object):
 
 
 class OrganizationsAdmin(object):
-    list_display = ['name', 'city', 'click_nums', 'fav_nums', 'address', 'add_time', 'students']
+    list_display = ['name', 'city', 'click_nums', 'fav_nums', 'address', 'add_time', 'students', 'category']
     search_fields = ['name', 'city__name', 'address', 'desc']
-    list_filter = ['city__name', 'click_nums', 'fav_nums', 'add_time']
+    list_filter = ['city__name', 'click_nums', 'fav_nums', 'add_time', 'category']
 
 
 class TeachersAdmin(object):

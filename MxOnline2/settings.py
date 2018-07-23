@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'xadmin',
     'crispy_forms',
     'captcha',
+    'dj_pagination',
 ]
 AUTH_USER_MODEL = 'user.UserProfile'
 
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'dj_pagination.middleware.PaginationMiddleware',
 ]
 
 ROOT_URLCONF = 'MxOnline2.urls'
@@ -73,6 +75,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
+                'django.template.context_processors.i18n',
             ],
         },
     },

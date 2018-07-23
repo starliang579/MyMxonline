@@ -21,11 +21,13 @@ class Organizations(models.Model):
     desc = models.CharField(max_length=200, verbose_name='机构简介')
     click_nums = models.IntegerField(verbose_name='点击次数')
     fav_nums = models.IntegerField(verbose_name='收藏人数')
-    image = models.ImageField(max_length=500, verbose_name='机构图片', upload_to='org/%Y/%m/%d')
+    image = models.ImageField(max_length=500, verbose_name='机构图片', upload_to='org/%Y/%m/%d', null=True, blank=True)
     address = models.CharField(max_length=200, verbose_name='机构地址')
     add_time = models.DateTimeField(default=datetime.now, verbose_name='添加时间')
     city = models.ForeignKey(Cities, verbose_name='城市', on_delete=models.CASCADE)
     students = models.IntegerField(verbose_name='学习人数', default=0)
+    category = models.CharField(choices=(('pxjg', '培训机构'), ('gx', '高校'), ('gr', '个人')), max_length=4, default='pxjg')
+    course_nums = models.IntegerField(verbose_name='课程数量', default=0)
 
     class Meta:
         verbose_name = '授课机构'
@@ -50,3 +52,6 @@ class Teachers(models.Model):
     class Meta:
         verbose_name = '授课教师'
         verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.name

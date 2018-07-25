@@ -3,7 +3,7 @@ __author__ = 'lqxing'
 __date__ = '2018/7/21 19:05'
 from django.conf.urls import url
 
-from .views import OrgListView, AddUserAskView, OrgHomeView, OrgCoursesView, OrgDescView, OrgTeachersView, AddOrgFavView
+from .views import OrgListView, AddUserAskView, OrgHomeView, OrgCoursesView, OrgDescView, OrgTeachersView, AddFavView
 
 
 app_name = 'organization'
@@ -20,7 +20,7 @@ urlpatterns = [
     url('^detail/desc/(?P<org_id>.*)$', OrgDescView.as_view(), name='org_desc'),
     # 机构讲师
     url('^detail/teachers/(?P<org_id>.*)$', OrgTeachersView.as_view(), name='org_teachers'),
-    # 机构收藏功能
-    url('^add_org_fav/$', AddOrgFavView.as_view(), name='add_org_fav'),
+    # 机构收藏（课程、教师）功能
+    url('^add_fav/$', AddFavView.as_view(), name='add_fav'),
 
 ]

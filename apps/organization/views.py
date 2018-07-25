@@ -40,6 +40,9 @@ class OrgListView(View):
         # 获取符合条件机构的数量
         orgs_count = all_orgs.count()
 
+        # 获取当前页面所在app
+        current_app = 'org'
+
         return render(request, 'org-list.html', {
             'all_orgs':all_orgs,
             'all_cities':all_cities,
@@ -48,6 +51,7 @@ class OrgListView(View):
             'city_id':city_id,
             'sort':sort,
             'hot_orgs':hot_orgs,
+            'current_app':current_app,
         })
 
 
@@ -152,25 +156,26 @@ class OrgTeachersView(View):
         })
 
 
-class AddOrgFavView(View):
+class AddFavView(View):
     """
-    收藏机构功能
+    收藏机构（课程、教师）功能
     """
     def post(self,request):
-        if request.user.is_authenticated:
-            fav_id = request.POST.get('fav_id')
-            fav_type = request.POST.get('fav_type')
-            fav_record = UserFavs.objects.filter(user=request.user, fav_type=int(fav_type), fav_id=(fav_id))
-            # 取消收藏
-            if fav_record:
-                fav_record.delete()
-                return HttpResponse('{"status":"success","msg":"收藏"}', 'json/application')
-            else:
-                fav_record = UserFavs()
-                fav_record.user = request.user
-                fav_record.fav_id = int(fav_id)
-                fav_record.fav_type = int(fav_type)
-                fav_record.save()
-                return HttpResponse('{"status":"success","msg":"已收藏"}', 'json/application')
-        else:
+        if  not request.user.is_authenticated:
             return HttpResponse('{"status":"fail","msg":"用户未登录"}', 'json/application')
+
+        fav_id = request.POST.get('fav_id')
+        fav_type = request.POST.get('fav_type')
+        fav_record = UserFavs.objects.filter(user=request.user, fav_type=int(fav_type), fav_id=(fav_id))
+        # 取消收藏
+        if fav_record:
+            fav_record.delete()
+            return HttpResponse('{"status":"success","msg":"收藏"}', 'json/application')
+        else:
+            fav_record = UserFavs()
+            fav_record.user = request.user
+            fav_record.fav_id = int(fav_id)
+            fav_record.fav_type = int(fav_type)
+            fav_record.save()
+            return HttpResponse('{"status":"success","msg":"已收藏"}', 'json/application')
+

@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 import xadmin
-from django.conf.urls import url, include, re_path
+from django.conf.urls import url, include
 from django.views.generic import TemplateView
 from django.views.static import serve
 
@@ -40,6 +40,9 @@ urlpatterns = [
 
     # organization相关url
     url(r'^org/', include('organization.urls',  namespace='org')),
+
+    # course相关url
+    url(r'^course/', include('course.urls', namespace='course')),
 
 
 ]

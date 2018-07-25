@@ -27,6 +27,9 @@ class UserCourses(models.Model):
         verbose_name = '用户课程'
         verbose_name_plural = verbose_name
 
+    def __str__(self):
+        return self.user.username + self.course.name
+
 
 class Comments(models.Model):
     user = models.ForeignKey(UserProfile, verbose_name='用户', on_delete=models.CASCADE)
@@ -37,6 +40,9 @@ class Comments(models.Model):
     class Meta:
         verbose_name = '用户评论'
         verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return '用户：' + self.user.username + '；课程：' + self.course.name
 
 
 class UserMsgs(models.Model):

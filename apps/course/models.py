@@ -18,6 +18,11 @@ class Courses(models.Model):
     add_times = models.DateTimeField(default=datetime.now, verbose_name='添加时间')
     org = models.ForeignKey(Organizations, verbose_name='所属机构', null=True, blank=True, on_delete=models.CASCADE)
     teacher = models.ForeignKey(Teachers, verbose_name='授课老师', null=True, blank=True, on_delete=models.CASCADE)
+    click_nums = models.IntegerField(verbose_name='点击人数',default=0)
+    category = models.CharField(max_length=10, verbose_name='课程类型', default='后端开发')
+    tag = models.CharField(max_length=10, verbose_name='课程标签', default='后端开发')
+    konwleage_preparation = models.CharField(max_length=200, verbose_name='知识准备', default='')
+    course_gain = models.CharField(max_length=100, verbose_name='学到什么', default='')
 
     class Meta:
         verbose_name = '课程'
@@ -25,6 +30,9 @@ class Courses(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_lessons(self):
+        return self.lessons_set.all()
 
 
 class Lessons(models.Model):
@@ -44,6 +52,7 @@ class Videos(models.Model):
     lesson = models.ForeignKey(Lessons, verbose_name='章节', on_delete=models.CASCADE)
     name = models.CharField(max_length=30, verbose_name='视频名')
     add_times = models.DateTimeField(default=datetime.now, verbose_name='添加时间')
+    learn_time = models.IntegerField(verbose_name='学习分钟数', default=0)
 
     class Meta:
         verbose_name = '课程视频'

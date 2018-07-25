@@ -43,7 +43,5 @@ urlpatterns = [
 
     # course相关url
     url(r'^course/', include('course.urls', namespace='course')),
-
-
 ]
 

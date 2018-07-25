@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic import View
 from django.http import HttpResponse
 
-from .models import Organizations, Cities
+from .models import Organizations, Cities, Teachers
 from operation.models import UserFavs
 from .forms import UserAskForm
 
@@ -179,3 +179,59 @@ class AddFavView(View):
             fav_record.save()
             return HttpResponse('{"status":"success","msg":"已收藏"}', 'json/application')
 
+
+class TeacherListView(View):
+    """
+    教师列表页
+    """
+    def get(self, request):
+        # 获取当前所在app
+        current_app = 'teacher'
+        all_teachers = Teachers.objects.all()
+
+        # 讲师排行榜
+        hot_teachers = all_teachers.order_by('-click_nums')
+
+        # 教师列表按人气排序
+        sort = request.GET.get('sort', '')
+        if sort == 'hot':
+            all_teachers = all_teachers.order_by('-click_nums')
+
+        teacher_nums = all_teachers.count()
+
+        return render(request, 'teachers-list.html', {
+            'all_teachers':all_teachers,
+            'current_app':current_app,
+            'teacher_nums':teacher_nums,
+            'sort':sort,
+            'hot_teachers':hot_teachers,
+        })
+
+
+class TeacherDetailView(View):
+    def get(self, request, teacher_id):
+        # 获取当前所在app
+        current_app = 'teacher'
+        # 获取当前teacher
+        teacher = Teachers.objects.get(id=int(teacher_id))
+
+        # 该讲师所属机构的讲师排行榜
+        teachers_in_org = teacher.org.teachers_set.all()
+        teachers_rank = teachers_in_org.order_by('-click_nums')
+
+        # 判断用户是否收藏了教师与机构
+        has_org_fav = False
+        has_teacher_fav = False
+        if not request.user.is_authenticated:
+            if UserFavs.objects.filter(user=request.user, fav_type=2, fav_id=teacher.org_id):
+                has_org_fav = True
+            if UserFavs.objects.filter(user=request.user, fav_type=3, fav_id=teacher.id):
+                has_teacher_fav = True
+
+        return render(request, 'teacher-detail.html', {
+            'current_app':current_app,
+            'teacher':teacher,
+            'teachers_rank':teachers_rank,
+            'has_org_fav':has_org_fav,
+            'has_teacher_fav':has_teacher_fav,
+        })

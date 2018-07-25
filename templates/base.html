@@ -53,7 +53,7 @@
 
             <div class="middle">
                 <div class="wp">
-                    <a href="index.html"><img class="fl" src="{% static 'images/logo.jpg' %}"/></a>
+                    <a href="{% url 'index' %}"><img class="fl" src="{% static 'images/logo.jpg' %}"/></a>
                     <div class="searchbox fr">
                         <div class="selectContainer fl">
                             <span class="selectOption" id="jsSelectOption" data-value="course">
@@ -80,8 +80,8 @@
 							<li class="{% ifequal current_app 'course' %}active{% endifequal %}" >
 								<a href="{% url 'course:course_list' %}">公开课<img class="hot" src="{% static 'images/nav_hot.png' %}"></a>
 							</li>
-							<li >
-								<a href="teachers-list.html">授课教师</a>
+							<li class="{% ifequal current_app 'teacher' %}active{% endifequal %}" >
+								<a href="{% url 'org:teacher_list' %}">授课教师</a>
 							</li>
 							<li class="{% ifequal current_app 'org' %}active{% endifequal %}" >
                                 <a href="{% url 'org:org_list' %}">授课机构</a>
@@ -99,7 +99,7 @@
     <section>
         <div class="wp">
             <ul  class="crumbs">
-                <li><a href="index.html">首页</a>></li>
+                <li><a href="{% url 'index' %}">首页</a>></li>
                 <li>课程机构</li>
             </ul>
         </div>

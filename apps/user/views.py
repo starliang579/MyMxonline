@@ -1,18 +1,48 @@
 from django.shortcuts import render
 from django.views import View
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, HttpResponseRedirect
 import json
+from django.urls import reverse
 
 from .forms import LoginForm, RegisterForm, ForgetPwdForm, ModifyPwdForm
-from .models import UserProfile, EmailVerifyRecords
+from .models import UserProfile, EmailVerifyRecords, Banners
 from utils.email_send import send_email_verifycord
 from extra_apps.utils.mixin_utils import LoginRequiredMixin
 from .forms import HeadshotForm, UpdatePwdForm, UpdateInfoForm
 from operation.models import UserCourses, UserFavs, UserMsgs
 from organization.models import Organizations, Teachers
 from course.models import Courses
+
+
+class IndexView(View):
+    def get(self, request):
+        # 取出轮播图
+        all_banners = Banners.objects.all().order_by('order')[:5]
+
+        # 取出课程
+        all_courses = Courses.objects.filter(is_banner=False)[:6]
+        banner_courses = Courses.objects.filter(is_banner=True).order_by('-add_times')[:3]
+
+        # 取出机构
+        all_orgs = Organizations.objects.all().order_by('-add_time')[:15]
+
+        return render(request, 'index.html', {
+            'all_banners':all_banners,
+            'all_courses':all_courses,
+            'banner_courses':banner_courses,
+            'all_orgs':all_orgs,
+        })
+
+
+class LogoutView(View):
+    """
+    用户登出
+    """
+    def get(self, request):
+        logout(request)
+        return HttpResponseRedirect(reverse('index'))
 
 
 class LoginView(View):
@@ -323,3 +353,4 @@ class MyMessagesView(LoginRequiredMixin, View):
         return render(request, 'usercenter-message.html', {
             'all_msgs':all_msgs,
         })
+

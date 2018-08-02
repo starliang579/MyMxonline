@@ -23,6 +23,7 @@ class Courses(models.Model):
     tag = models.CharField(max_length=10, verbose_name='课程标签', default='后端开发')
     konwleage_preparation = models.CharField(max_length=200, verbose_name='知识准备', default='')
     course_gain = models.CharField(max_length=100, verbose_name='学到什么', default='')
+    is_banner = models.BooleanField(default=False, verbose_name='课程是否轮播')
 
     class Meta:
         verbose_name = '课程'

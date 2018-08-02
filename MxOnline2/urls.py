@@ -18,7 +18,8 @@ from django.conf.urls import url, include
 from django.views.generic import TemplateView
 from django.views.static import serve
 
-from user.views import LoginView, RegisterView, ActivateView, ForgetPwdView, ResetPwdView, ModifyPwdView
+from user.views import LoginView, RegisterView, ActivateView, ForgetPwdView, ResetPwdView, ModifyPwdView, LogoutView
+from user.views import IndexView
 
 from .settings import MEDIA_ROOT
 
@@ -27,8 +28,9 @@ urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
 
     # 账户相关urls设置
-    url(r'^$', TemplateView.as_view(template_name='index.html'), name='index'),
+    url(r'^$', IndexView.as_view(), name='index'),
     url(r'^login/$', LoginView.as_view(), name='login'),
+    url(r'^logout/$', LogoutView.as_view(), name='logout'),
     url(r'^register/$', RegisterView.as_view(), name='register'),
     url(r'^captcha/', include('captcha.urls')),
     url(r'^activate/(?P<activation_code>.*)/$', ActivateView.as_view(), name='activate'),

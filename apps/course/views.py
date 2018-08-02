@@ -47,10 +47,6 @@ class CourseDetailView(View):
         # 获取当前课程
         course = Courses.objects.get(id=course_id)
 
-        # 课程点击数+1
-        course.click_nums += 1
-        course.save()
-
         # 获取学习该门课程的用户
         relate_usercourses = course.usercourses_set.all()
         relate_usercourses = relate_usercourses.all()[:5]
@@ -68,6 +64,10 @@ class CourseDetailView(View):
             # 是否有机构收藏
             if UserFavs.objects.filter(user=request.user, fav_type=2, fav_id=course.org.id):
                 has_org_fav = True
+
+        # 课程点击数+1
+        course.click_nums += 1
+        course.save()
 
         return render(request, 'course-detail.html', {
             'course':course,

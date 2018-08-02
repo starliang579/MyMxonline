@@ -5,6 +5,7 @@ from django.contrib.auth.hashers import make_password
 from django.http.response import HttpResponse, HttpResponseRedirect
 import json
 from django.urls import reverse
+from django.shortcuts import render_to_response
 
 from .forms import LoginForm, RegisterForm, ForgetPwdForm, ModifyPwdForm
 from .models import UserProfile, EmailVerifyRecords, Banners
@@ -18,6 +19,7 @@ from course.models import Courses
 
 class IndexView(View):
     def get(self, request):
+        print(1/0)
         # 取出轮播图
         all_banners = Banners.objects.all().order_by('order')[:5]
 
@@ -353,4 +355,3 @@ class MyMessagesView(LoginRequiredMixin, View):
         return render(request, 'usercenter-message.html', {
             'all_msgs':all_msgs,
         })
-

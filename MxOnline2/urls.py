@@ -21,7 +21,7 @@ from django.views.static import serve
 from user.views import LoginView, RegisterView, ActivateView, ForgetPwdView, ResetPwdView, ModifyPwdView, LogoutView
 from user.views import IndexView
 
-from .settings import MEDIA_ROOT
+from .settings import MEDIA_ROOT, STATICFILES_DIRS
 
 
 urlpatterns = [
@@ -38,7 +38,10 @@ urlpatterns = [
     url(r'^resetpwd/(?P<reset_code>.*)/$', ResetPwdView.as_view(), name='resetpwd'),
     url(r'^modifypwd/$', ModifyPwdView.as_view(), name='modifypwd'),
 
+    # 配置media访问路径
     url(r'^media/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT}),
+    # 配置static访问路径
+    url(r'^static/(?P<path>.*)$', serve, {'document_root': STATICFILES_DIRS[0]}),
 
     # organization相关url
     url(r'^org/', include('organization.urls',  namespace='org')),

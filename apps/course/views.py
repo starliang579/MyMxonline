@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 from django.http import HttpResponse
+from django.db.models import Q
 
 from .models import Courses, Resources
 from operation.models import UserFavs, UserCourses, Comments
@@ -11,10 +12,13 @@ class CourseListView(View):
     课程列表页
     """
     def get(self, request):
-        # 获取当前页面所属app
-        current_app = 'course'
         # 获取所有课程
         all_courses = Courses.objects.all().order_by('-add_times')
+
+        # 课程全局搜索功能
+        search_keywords = request.GET.get('keywords', '')
+        if search_keywords:
+            all_courses = all_courses.filter(Q(name__icontains=search_keywords)|Q(desc__icontains=search_keywords)|Q(detail__icontains=search_keywords))
 
         sort = request.GET.get('sort', '')
         # 按人气排序
@@ -29,9 +33,9 @@ class CourseListView(View):
 
         return render(request, 'course-list.html', {
             'all_courses':all_courses,
-            'current_app':current_app,
             'sort':sort,
             'hot_courses':hot_courses,
+            'search_keywords':search_keywords,
         })
 
 
@@ -40,9 +44,6 @@ class CourseDetailView(View):
     课程详情页
     """
     def get(self, request, course_id):
-        # 获取当前页面所属app
-        current_app = 'course'
-
         # 获取当前课程
         course = Courses.objects.get(id=course_id)
 
@@ -74,7 +75,6 @@ class CourseDetailView(View):
             'relate_courses':relate_courses,
             'has_course_fav':has_course_fav,
             'has_org_fav':has_org_fav,
-            'current_app':current_app,
         })
 
 
@@ -83,9 +83,6 @@ class CourseLessonView(View):
     课程章节
     """
     def get(self, request, course_id):
-        # 获取当前页面所属app
-        current_app = 'course'
-
         # 获取当前课程
         course = Courses.objects.get(id=course_id)
 
@@ -110,7 +107,6 @@ class CourseLessonView(View):
             'course':course,
             'all_resources':all_resources,
             'relate_courses':relate_courses,
-            'current_app': current_app,
         })
 
 
@@ -119,9 +115,6 @@ class CourseCommentView(View):
     课程评论
     """
     def get(self, request, course_id):
-        # 获取当前页面所属app
-        current_app = 'course'
-
         # 获取当前课程
         course = Courses.objects.get(id=course_id)
 
@@ -143,7 +136,6 @@ class CourseCommentView(View):
             'all_resources': all_resources,
             'relate_courses': relate_courses,
             'all_comments':all_comments,
-            'current_app': current_app,
         })
 
 

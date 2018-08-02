@@ -10,16 +10,26 @@ from user.models import EmailVerifyRecords
 
 
 def send_email_verifycord(email, send_type):
-    random_code = create_random_code()
+    # 生成验证码
+    if send_type == 'updateemail':
+        random_code = create_random_code(4)
+    else:
+        random_code = create_random_code()
 
     # 注册，发送邮箱激活码
     if send_type == 'register':
         email_subject = '慕学在线网账号激活'
         email_message = '请点击以下链接激活您的慕学在线账号：http://127.0.0.1:8000/activate/{0}/'.format(random_code)
 
+    # 找回密码
     if send_type == 'forget':
         email_subject = '慕学在线网账号重置密码链接'
         email_message = '请点击以下链接重置您的密码：http://127.0.0.1:8000/resetpwd/{0}/'.format(random_code)
+
+    # 个人中心：修改邮箱
+    if send_type == 'updateemail':
+        email_subject = '慕学在线网账号修改邮箱'
+        email_message = '验证码：{0}'.format(random_code)
 
     # 将邮箱验证码保存到数据库
     code_record = EmailVerifyRecords()
@@ -38,4 +48,3 @@ def create_random_code(length=16):
     for i in range(length):
         random_code += random.choice(all_str)
     return random_code
-

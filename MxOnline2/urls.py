@@ -43,5 +43,9 @@ urlpatterns = [
 
     # course相关url
     url(r'^course/', include('course.urls', namespace='course')),
+
+    # 用户中心相关urls
+    url(r'^users/', include('user.urls', namespace='user')),
+
 ]
 

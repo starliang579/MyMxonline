@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import View
 from django.http import HttpResponse
+from django.db.models import Q
 
 from .models import Organizations, Cities, Teachers
 from operation.models import UserFavs
@@ -16,6 +17,12 @@ class OrgListView(View):
         all_orgs = Organizations.objects.all()
         # 获取所有城市
         all_cities = Cities.objects.all()
+
+        # 机构全局搜索功能
+        search_keywords = request.GET.get('keywords', '')
+        if search_keywords:
+            all_orgs = all_orgs.filter(Q(name__icontains=search_keywords)|
+                                       Q(desc__icontains=search_keywords))
 
         # 对机构进行筛选：机构类型
         category = request.GET.get('ct','')
@@ -40,9 +47,6 @@ class OrgListView(View):
         # 获取符合条件机构的数量
         orgs_count = all_orgs.count()
 
-        # 获取当前页面所在app
-        current_app = 'org'
-
         return render(request, 'org-list.html', {
             'all_orgs':all_orgs,
             'all_cities':all_cities,
@@ -51,7 +55,7 @@ class OrgListView(View):
             'city_id':city_id,
             'sort':sort,
             'hot_orgs':hot_orgs,
-            'current_app':current_app,
+            'search_keywords':search_keywords,
         })
 
 
@@ -185,9 +189,15 @@ class TeacherListView(View):
     教师列表页
     """
     def get(self, request):
-        # 获取当前所在app
-        current_app = 'teacher'
         all_teachers = Teachers.objects.all()
+
+        # 教师全局搜索功能
+        search_keywords = request.GET.get('keywords', '')
+        if search_keywords:
+            all_teachers = all_teachers.filter(Q(name__icontains=search_keywords)|
+                                               Q(work_company__icontains=search_keywords)|
+                                               Q(work_position__icontains=search_keywords)|
+                                               Q(feature__icontains=search_keywords))
 
         # 讲师排行榜
         hot_teachers = all_teachers.order_by('-click_nums')
@@ -201,17 +211,15 @@ class TeacherListView(View):
 
         return render(request, 'teachers-list.html', {
             'all_teachers':all_teachers,
-            'current_app':current_app,
             'teacher_nums':teacher_nums,
             'sort':sort,
             'hot_teachers':hot_teachers,
+            'search_keywords':search_keywords,
         })
 
 
 class TeacherDetailView(View):
     def get(self, request, teacher_id):
-        # 获取当前所在app
-        current_app = 'teacher'
         # 获取当前teacher
         teacher = Teachers.objects.get(id=int(teacher_id))
 
@@ -229,7 +237,6 @@ class TeacherDetailView(View):
                 has_teacher_fav = True
 
         return render(request, 'teacher-detail.html', {
-            'current_app':current_app,
             'teacher':teacher,
             'teachers_rank':teachers_rank,
             'has_org_fav':has_org_fav,
